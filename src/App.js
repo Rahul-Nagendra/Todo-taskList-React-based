@@ -1,25 +1,45 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
-
+// import './App.css';
+import Todos from './components/Todo'
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      todos: [
+        {
+          id: 1,
+          title: 'Create Todo list App',
+          completed: false
+        },
+        {
+          id: 2,
+          title: 'Upload to Github',
+          completed: false
+        }
+      ]
+    }
+  }
+  toggleComplete = (id) => {
+    // console.log('btn clicked')
+    console.log(id)
+    this.setState({
+      todos: this.state.todos.map(todo => {
+        if (todo.id == id) {
+          todo.completed = !todo.completed
+        }
+        return todo
+      })
+    })
+
+
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <h1>Hello</h1>
+        <Todos todos={this.state.todos} toggleComplete={this.toggleComplete} />
       </div>
     );
   }
