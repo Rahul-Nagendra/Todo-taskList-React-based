@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 // import './App.css';
+import Header from './components/layout/header'
 import Todos from './components/Todo'
+import AddTodoItem from './components/AddTodoItem'
+import uuid from 'uuid'
+import Axios from 'axios';
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       todos: [
         {
-          id: 1,
+          id: uuid.v4(),
           title: 'Create Todo list App',
           completed: false
         },
         {
-          id: 2,
+          id: uuid.v4(),
           title: 'Upload to Github',
           completed: false
         }
@@ -34,12 +38,50 @@ class App extends Component {
 
 
   }
+  deleteTodo = (id) => {
+    // this.setState({
+    //   todos: this.state.todos.filter(todo => {
+    //     return todo.id != id
+    //   })
+    // })
+    Axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`).then(response => {
+      this.setState({
+        todos: this.state.todos.filter(todo => {
+          return todo.id != id
+        })
+      })
+    })
+  }
 
+  addTodo = (title) => {
+    console.log(title)
+    let newTodo = {
+      title: title,
+      completed: false
+    }
+    Axios.post('https://jsonplaceholder.typicode.com/todos', newTodo).then(response => {
+      this.setState({
+        todos: [response.data, ...this.state.todos]
+      })
+    })
+    // this.setState({
+    //   todos: [newTodo, ...this.state.todos]
+    // })
+  }
+
+  componentWillMount() {
+    Axios.get(`https://jsonplaceholder.typicode.com/todos`).then(response => {
+      this.setState({
+        todos: response.data
+      })
+    })
+  }
   render() {
     return (
       <div className="App">
-        <h1>Hello</h1>
-        <Todos todos={this.state.todos} toggleComplete={this.toggleComplete} />
+        <Header />
+        <AddTodoItem addTodo={this.addTodo} />
+        <Todos todos={this.state.todos} toggleComplete={this.toggleComplete} deleteTodo={this.deleteTodo} />
       </div>
     );
   }
